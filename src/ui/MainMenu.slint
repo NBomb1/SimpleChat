@@ -1,0 +1,185 @@
+import { Button, LineEdit, VerticalBox } from "std-widgets.slint";
+
+
+export component AppWindow inherits Window {
+    title: "SimpleChat";
+
+    // making it appear in the same way as linux (debian), since width and height not enough.
+    preferred-height: 190pt;
+    preferred-width: 210pt;
+    max-width: 210pt;
+    max-height: 190pt;
+    min-width: 210pt;
+    min-height: 190pt;
+    //
+
+    x: (root.width - self.width) / 2;
+            y: (root.height - self.height) / 2;
+
+
+    in-out property <bool> first-start: true;
+    in-out property <int> active-page: 0;
+
+    in-out property <string> user-name: "";
+    in-out property <string> ip: "";
+    in-out property <string> port: "";
+
+
+
+    // First Layout
+    VerticalLayout {
+
+        // animation on the first start \/
+//        Timer{
+//            interval: 50ms;
+//            running: true;
+//            triggered => {
+//                root.first-start = false;
+//            }
+//        }
+
+        opacity: root.first-start ? 0 : 1;
+        animate opacity { duration: 1500ms; easing: ease-in-out; delay: 100ms;}
+        //
+
+
+        // page change animation
+        x: root.active-page == 0 ? 0pt : -root.width;
+        animate x { duration: 250ms; easing: ease-in-out; }
+        //
+
+        alignment: center;
+        spacing: 20pt;
+
+        // Title layout
+        VerticalLayout {
+            spacing: 5pt;
+            Text {
+                text: "Welcome Back!";
+                font-size: 16pt;
+                horizontal-alignment: center;
+            }
+            Text {
+                text: "Let's begin with connection info:";
+                font-size: 11pt;
+                horizontal-alignment: center;
+            }
+        }
+        //
+
+
+        // Data layout
+        HorizontalLayout {
+            alignment: center;
+            VerticalLayout {
+                spacing: 8pt;
+                width: 140pt;
+
+                LineEdit {
+                    placeholder-text: "IP Address";
+                    height: 22pt;
+                }
+                LineEdit {
+                    placeholder-text: "Port";
+                    height: 22pt;
+                }
+                Button {
+                    text: "Continue";
+                    primary: true;
+                    height: 24pt;
+                    clicked => { root.active-page = 1; }
+                }
+            }
+        }
+        //
+    }
+
+
+
+    // Second Layout. First index
+    VerticalLayout {
+        x: root.active-page == 1 ? 0pt : root.width;
+        animate x { duration: 250ms; easing: ease-in-out; }
+
+        alignment: center;
+        spacing: 20pt;
+
+        // Title layout
+        VerticalLayout {
+            spacing: 5pt;
+            Text {
+                text: "Let people know your name";
+                font-size: 15.8pt;
+                horizontal-alignment: center;
+            }
+        }
+
+        // Data layout
+        HorizontalLayout {
+            alignment: center;
+            VerticalLayout {
+                spacing: 8pt;
+                width: 140pt;
+
+                LineEdit {
+                    placeholder-text: "Username";
+                    height: 22pt;
+                    horizontal-alignment: center;
+                }
+                Button {
+                    text: "Continue";
+                    primary: true;
+                    height: 24pt;
+                    clicked => { root.active-page = 2; }
+                }
+            }
+        }
+    }
+
+
+    // Third Layout.
+    VerticalLayout {
+        // page chnage animation
+        y: root.active-page == 2 ? 0pt : root.height;
+        animate y { duration: 250ms; easing: ease-in-out; }
+
+        alignment: center;
+        spacing: 20pt;
+
+        // Title layout
+        VerticalLayout {
+            spacing: 5pt;
+            Text {
+                text: "Final step";
+                font-size: 16pt;
+                horizontal-alignment: center;
+            }
+            Text {
+                text: "Let's choose our role";
+                font-size: 11pt;
+                horizontal-alignment: center;
+            }
+        }
+
+        // Data layout
+        HorizontalLayout {
+            alignment: center;
+            HorizontalLayout {
+                spacing: 8pt;
+                width: 140pt;
+
+                Button {
+                    text: "Server";
+                    height: 24pt;
+                    clicked => {}
+                }
+                Button {
+                    text: "Client";
+                    height: 24pt;
+                    clicked => { }
+                }
+            }
+        }
+    }
+
+}

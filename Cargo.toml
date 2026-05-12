@@ -1,0 +1,12 @@
+[package]
+name = "SimpleChat"
+version = "0.0.1"
+edition = "2024"
+authors = ["ArT"]
+
+[dependencies]
+slint = "1.16.1"
+slint-build = "1.16.1"
+
+[build-dependencies]
+slint-build = "1.16.1"
