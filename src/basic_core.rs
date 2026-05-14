@@ -7,25 +7,31 @@ use crate::basic_core::configuration_manager::ConfigurationManager;
 use crate::basic_core::ui_manager::UIManager;
 
 pub struct Core {
-    configurator_manager: configuration_manager::ConfigurationManager,
-    ui_manager: ui_manager::UIManager,
+    configurator_manager: ConfigurationManager,
+    ui_manager: UIManager,
     // network: network,
 }
 
 impl Core {
     pub fn new() -> Core {
-        logger::init();
-        let ui = UIManager::new();
+        logger::init(); // setting up logger
+
+        let ui = UIManager::new();  // ui
+        let configuration_manager = ConfigurationManager::new();  // configs
 
         Core{
-            // configurator_manager: (),
-            configurator_manager: ConfigurationManager::new(),
+            configurator_manager: configuration_manager,
             ui_manager: ui,
             // network: (),
         }
     }
 
     pub fn setup(&mut self) -> () {
+        log::info!("Setting up core; Initializing UI.");
         self.ui_manager.setup();
+    }
+
+    fn close(&mut self) {
+        log::info!("Closing core");
     }
 }

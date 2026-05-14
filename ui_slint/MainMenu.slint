@@ -1,16 +1,29 @@
-import { Button, LineEdit, VerticalBox } from "std-widgets.slint";
-
+import { Button, VerticalBox, LineEdit } from "std-widgets.slint";
+import { ValidatedInput } from "./widgets/validated_input.slint";
 
 export component AppWindow inherits Window {
+
+    property <length> height_: 195pt;
+    property <length> width_: 210pt;
+
+    in-out property <bool> first-start: false;
+    in-out property <int> active-page: 0;
+
+    in-out property <string> user-name: "";
+    in-out property <string> ip: "";
+    in-out property <string> port: "";
+
+    in-out property <string> error_reason;
+
     title: "SimpleChat";
 
-    // making it appear in the same way as linux (debian), since width and height not enough.
-    preferred-height: 190pt;
-    preferred-width: 210pt;
-    max-width: 210pt;
-    max-height: 190pt;
-    min-width: 210pt;
-    min-height: 190pt;
+    // making it appear in the same way as linux (debian), since width and height seems to be not enough.
+    preferred-height: height_;
+    preferred-width: width_;
+    max-width: width_;
+    max-height: height_;
+    min-width: width_;
+    min-height: height_;
 
     // making it appear at the center of the screen, so the first frame is not being rendered somewhere else.
     no-frame: root.first-start;
@@ -19,13 +32,6 @@ export component AppWindow inherits Window {
     x: (root.width - self.width) / 2;
             y: (root.height - self.height) / 2;
 
-
-    in-out property <bool> first-start: true;
-    in-out property <int> active-page: 0;
-
-    in-out property <string> user-name: "";
-    in-out property <string> ip: "";
-    in-out property <string> port: "";
 
 
 
@@ -69,13 +75,13 @@ export component AppWindow inherits Window {
                 spacing: 8pt;
                 width: 140pt;
 
-                LineEdit {
+                ValidatedInput {
                     placeholder-text: "IP Address";
-                    height: 22pt;
+                    height-text: 22pt;
                 }
-                LineEdit {
+                ValidatedInput {
                     placeholder-text: "Port";
-                    height: 22pt;
+                    height-text: 22pt;
                 }
                 Button {
                     text: "Continue";
@@ -115,16 +121,30 @@ export component AppWindow inherits Window {
                 spacing: 8pt;
                 width: 140pt;
 
-                LineEdit {
+                ValidatedInput {
                     placeholder-text: "Username";
-                    height: 22pt;
+                    height-text: 22pt;
                     horizontal-alignment: center;
+                    accepted(text) => {
+                    }
                 }
-                Button {
-                    text: "Continue";
-                    primary: true;
-                    height: 24pt;
-                    clicked => { root.active-page = 2; }
+
+                HorizontalLayout {
+                    spacing: 3pt;
+                    Button {
+                        width: 50%;
+                        text: "Return";
+                        height: 24pt;
+                        clicked => { root.active-page = 2; }
+                    }
+                    Button {
+                        width: 50%;
+                        text: "Continue";
+                        primary: true;
+                        height: 24pt;
+                        clicked => { root.active-page = 2; }
+                    }
+
                 }
             }
         }
@@ -149,7 +169,7 @@ export component AppWindow inherits Window {
                 horizontal-alignment: center;
             }
             Text {
-                text: "Let's choose our role";
+                text: "Let's choose the role";
                 font-size: 11pt;
                 horizontal-alignment: center;
             }

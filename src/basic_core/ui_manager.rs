@@ -19,7 +19,7 @@ impl UIManager {
 
     pub fn setup(&mut self) {
 
-        // creating weak ui for lambda
+        // creating event trigger.
         let weak_ui = self.start_window.as_weak();
         self.start_window.window().set_rendering_notifier(move |state, _graphics_api| {
             // creating variable to get current state of window
@@ -50,25 +50,3 @@ impl UIManager {
     }
 
 }
-
-// fn main() -> Result<(), Box<dyn std::error::Error>> {
-//
-//     let ui_manager = AppWindow::new()?;
-//     let weak_ui = ui_manager.as_weak();
-//
-//     ui_manager.window().set_rendering_notifier(move |state, _graphics_api| {
-//         match state {
-//             RenderingState::AfterRendering => {
-//                 if let Some(ui_manager) = weak_ui.upgrade() {
-//                     if ui_manager.get_first_start() {
-//                         ui_manager.set_first_start(false);
-//                     }
-//                 }
-//             }
-//             _ => {}
-//         }
-//     }).expect("Couldn't create notifier.");
-//
-//     ui_manager.run()?;
-//     Ok(())
-// }
