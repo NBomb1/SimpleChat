@@ -3,6 +3,9 @@ import { LineEdit } from "std-widgets.slint";
 // widget to show not valid data
 export component ValidatedInput {
     callback accepted(text: string);
+    callback focus_out(text: string);
+    callback focus-text;
+
     in-out property <string> text-text <=> input.text;
     in property <string> placeholder-text;
     in-out property <length> height-text;
@@ -10,20 +13,28 @@ export component ValidatedInput {
 
     in-out property <bool> has-error: false;
 
+    focus-text => {input.focus();}
 
-    Rectangle {
+    rect := Rectangle {
         border-width: 1pt;
 
-        border-color: root.has-error ? #ff0000 : transparent;
+        border-color: root.has-error ? #ff5555 : transparent;
         border-radius: 4pt;
         animate border-color { duration: 200ms; }
 
         input := LineEdit {
             accepted(text) => {accepted(text);}
+
             width: 100%;
             height: height-text;
             placeholder-text: root.placeholder-text;
             horizontal-alignment: horizontal-alignment;
+
+            changed has-focus => {
+                 if (!self.has-focus){
+                     focus_out(self.text);
+                 }
+            }
         }
     }
 }

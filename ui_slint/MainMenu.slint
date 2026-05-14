@@ -9,11 +9,21 @@ export component AppWindow inherits Window {
     in-out property <bool> first-start: true;
     in-out property <int> active-page: 0;
 
-    in-out property <string> user-name: "";
+    // data
+    in-out property <string> username: "";
     in-out property <string> ip: "";
     in-out property <string> port: "";
+    // errors
+    in-out property <bool> username_error: false;
+    in-out property <bool> ip_error: false;
+    in-out property <bool> port_error: false;
 
-    in-out property <string> error_reason;
+    callback validate_username(text: string);
+    callback validate_ip(text: string);
+    callback validate_port(text: string);
+
+    callback validate_connection_page;
+    callback validate_username_page;
 
     title: "SimpleChat";
 
@@ -31,8 +41,6 @@ export component AppWindow inherits Window {
 
     x: (root.width - self.width) / 2;
             y: (root.height - self.height) / 2;
-
-
 
 
     // First Layout
@@ -75,19 +83,27 @@ export component AppWindow inherits Window {
                 spacing: 8pt;
                 width: 140pt;
 
-                ValidatedInput {
+                ip_w := ValidatedInput {
+                    text-text <=> ip;
+                    has-error: ip_error;
                     placeholder-text: "IP Address";
                     height-text: 22pt;
+                    accepted(text) => {validate_ip(text); port_w.focus-text();}
+                    focus_out(text) => {validate_ip(text)}
                 }
-                ValidatedInput {
+                port_w := ValidatedInput {
+                    has-error: port_error;
+                    text-text <=> port;
                     placeholder-text: "Port";
                     height-text: 22pt;
+                    accepted(text) => {button_w.clicked()}
+                    focus_out(text) => {validate_port(text)}
                 }
-                Button {
+                button_w := Button {
                     text: "Continue";
                     primary: true;
                     height: 24pt;
-                    clicked => { root.active-page = 1; }
+                    clicked => {validate_connection_page();}
                 }
             }
         }
@@ -122,11 +138,13 @@ export component AppWindow inherits Window {
                 width: 140pt;
 
                 ValidatedInput {
+                    has-error: username_error;
+                    text-text <=> username;
                     placeholder-text: "Username";
                     height-text: 22pt;
                     horizontal-alignment: center;
-                    accepted(text) => {
-                    }
+                    accepted(text) => {cont_w.clicked()}
+                    focus_out(text) => {validate_username(text)}
                 }
 
                 HorizontalLayout {
@@ -137,12 +155,12 @@ export component AppWindow inherits Window {
                         height: 24pt;
                         clicked => { root.active-page = 0; }
                     }
-                    Button {
+                    cont_w := Button {
                         width: 50%;
                         text: "Continue";
                         primary: true;
                         height: 24pt;
-                        clicked => { root.active-page = 2; }
+                        clicked => { validate_username_page()}
                     }
 
                 }
@@ -185,11 +203,13 @@ export component AppWindow inherits Window {
                 Button {
                     text: "Server";
                     height: 24pt;
+                    primary: true;
                     clicked => {}
                 }
                 Button {
                     text: "Client";
                     height: 24pt;
+                    primary: true;
                     clicked => { }
                 }
             }
