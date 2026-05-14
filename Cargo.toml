@@ -7,6 +7,10 @@ authors = ["ArT"]
 [dependencies]
 slint = "1.16.1"
 slint-build = "1.16.1"
+log = "0.4"
+pretty_env_logger = "0.5"
+winit = "0.30.13"
+i-slint-backend-winit = "1.16.1"
 
 [build-dependencies]
 slint-build = "1.16.1"

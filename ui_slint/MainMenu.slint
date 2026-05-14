@@ -11,6 +11,9 @@ export component AppWindow inherits Window {
     max-height: 190pt;
     min-width: 210pt;
     min-height: 190pt;
+
+    // making it appear at the center of the screen, so the first frame is not being rendered somewhere else.
+    no-frame: root.first-start;
     //
 
     x: (root.width - self.width) / 2;
@@ -29,17 +32,8 @@ export component AppWindow inherits Window {
     // First Layout
     VerticalLayout {
 
-        // animation on the first start \/
-//        Timer{
-//            interval: 50ms;
-//            running: true;
-//            triggered => {
-//                root.first-start = false;
-//            }
-//        }
-
         opacity: root.first-start ? 0 : 1;
-        animate opacity { duration: 1500ms; easing: ease-in-out; delay: 100ms;}
+        animate opacity { duration: 1500ms; easing: ease-in-out; delay: 250ms;}
         //
 
 
