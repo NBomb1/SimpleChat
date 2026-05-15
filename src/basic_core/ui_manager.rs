@@ -90,5 +90,4 @@ impl UIManager {
         let weak_ui = weak_ui_origin.clone();
         self.start_window.on_validate_username_page(move || { pages::username_page_validation(weak_ui.clone()); });
     }
-
 }

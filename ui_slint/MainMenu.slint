@@ -42,6 +42,11 @@ export component AppWindow inherits Window {
     x: (root.width - self.width) / 2;
             y: (root.height - self.height) / 2;
 
+    changed active-page  => {
+        if (active-page == 0) {ip_w.focus-text()}
+        if (active-page == 1) {username_w.focus-text()}
+    }
+
 
     // First Layout
     VerticalLayout {
@@ -137,7 +142,7 @@ export component AppWindow inherits Window {
                 spacing: 8pt;
                 width: 140pt;
 
-                ValidatedInput {
+                username_w := ValidatedInput {
                     has-error: username_error;
                     text-text <=> username;
                     placeholder-text: "Username";
@@ -201,16 +206,16 @@ export component AppWindow inherits Window {
                 width: 140pt;
 
                 Button {
-                    text: "Server";
-                    height: 24pt;
-                    primary: true;
-                    clicked => {}
-                }
-                Button {
                     text: "Client";
                     height: 24pt;
                     primary: true;
                     clicked => { }
+                }
+                Button {
+                    text: "Server";
+                    height: 24pt;
+                    primary: true;
+                    clicked => {}
                 }
             }
         }
