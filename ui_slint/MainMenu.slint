@@ -1,4 +1,4 @@
-import { Button, VerticalBox, LineEdit } from "std-widgets.slint";
+import { Button, VerticalBox, LineEdit, ListView } from "std-widgets.slint";
 import { ValidatedInput } from "./widgets/validated_input.slint";
 
 export component AppWindow inherits Window {
@@ -217,6 +217,57 @@ export component AppWindow inherits Window {
                     primary: true;
                     clicked => {server_mode()}
                     enabled <=> root.mode_button_is_active;
+                }
+            }
+        }
+    }
+
+    callback send_message_fired(string);
+    in-out property <[string]> chat_messages: ["Система: Добро пожаловать в SimpleChat!"];
+    in-out property <string> current_status: "Ожидание...";
+
+
+
+    VerticalLayout {
+        x: root.active-page == 3 ? 0pt : -root.height;
+        animate x { duration: 250ms; easing: ease-in-out; }
+
+        spacing: 10pt;
+        padding: 10pt;
+
+        // Статус-бар подключения
+        Text {
+            text: root.current_status;
+            color: #4CAF50;
+            font-size: 10pt;
+        }
+
+        // Лента сообщений
+        ListView {
+            height: 110pt;
+            for msg in root.chat_messages : Text {
+                text: msg;
+                font-size: 11pt;
+            }
+        }
+
+        // Поле ввода и кнопка отправки
+        HorizontalLayout {
+            spacing: 5pt;
+            message_input := TextInput {
+                text: "";
+                font-size: 11pt;
+                // По нажатию Enter тоже отправляем
+                accepted => {
+                    root.send_message_fired(self.text);
+                    self.text = ""; // Очищаем поле
+                }
+            }
+            Button {
+                text: "Послать";
+                clicked => {
+                    root.send_message_fired(message_input.text);
+                    message_input.text = "";
                 }
             }
         }

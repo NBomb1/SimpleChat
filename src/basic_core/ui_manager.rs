@@ -41,7 +41,11 @@ impl UIManager {
     }
 
     /// Mode buttons stands for Server and Client choice. Page index 2.
-    pub fn switch_state_mode_buttons(&mut self, state: bool) { self.start_window.set_mode_button_is_active(state); }
+    pub fn switch_state_mode_buttons(&mut self, state: bool) { self.start_window.set_mode_button_is_active(state);}
+        
+    pub fn change_page(&mut self, page: i32){
+        self.start_window.set_active_page(page);
+    }
 
     pub(super) fn core_link_commands(&mut self, tx: UnboundedSender<CoreCommand>) {linkers::core_link_commands(&mut self.start_window.as_weak(), tx);}
 }

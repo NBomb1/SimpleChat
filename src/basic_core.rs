@@ -7,12 +7,13 @@ mod core_executor;
 use tokio::sync::mpsc::UnboundedSender;
 use crate::basic_core::configuration_manager::ConfigurationManager;
 use crate::basic_core::core_executor::CoreCommand;
+use crate::basic_core::network::NetworkManager;
 use crate::basic_core::ui_manager::UIManager;
 
 pub struct Core {
     configurator_manager: ConfigurationManager,
     ui_manager: UIManager,
-    // network: network,
+    network_manager: network::NetworkManager,
     command_tx: UnboundedSender<CoreCommand>
 }
 
@@ -22,11 +23,12 @@ impl Core {
 
         let ui = UIManager::new();  // ui
         let configuration_manager = ConfigurationManager::new();  // configs
+        let network = NetworkManager::new();
 
         Core{
             configurator_manager: configuration_manager,
             ui_manager: ui,
-            // network: (),
+            network_manager: network,
             command_tx: core_executor::create_compact_bridge(),
         }
     }
@@ -40,6 +42,5 @@ impl Core {
     fn close(&mut self) {
         log::info!("Closing core");
     }
-    
 
 }
