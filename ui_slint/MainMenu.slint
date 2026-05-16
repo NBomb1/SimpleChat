@@ -19,6 +19,8 @@ export component AppWindow inherits Window {
     in-out property <bool> ip_error: false;
     in-out property <bool> port_error: false;
 
+    in-out property <bool> mode_button_is_active: true;
+
     callback validate_username(text: string);
     callback validate_ip(text: string);
     callback validate_port(text: string);
@@ -207,12 +209,14 @@ export component AppWindow inherits Window {
                     height: 24pt;
                     primary: true;
                     clicked => { client_mode()}
+                    enabled <=> root.mode_button_is_active;
                 }
                 Button {
                     text: "Server";
                     height: 24pt;
                     primary: true;
                     clicked => {server_mode()}
+                    enabled <=> root.mode_button_is_active;
                 }
             }
         }

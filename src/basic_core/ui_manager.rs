@@ -1,9 +1,12 @@
 mod validators;
 mod pages;
 mod center_new;
+pub(crate) mod linkers;
 
-use slint::{ComponentHandle, RenderingState};
+use slint::ComponentHandle;
+use tokio::sync::mpsc::UnboundedSender;
 use crate::AppWindow;
+use crate::basic_core::core_executor::CoreCommand;
 
 pub struct UIManager {
     start_window: AppWindow,
@@ -24,8 +27,8 @@ impl UIManager {
     }
 
     pub fn setup(&mut self) {
-        self.link_validators();
-        self.window_events();
+        linkers::ui_link_validators(&mut self.start_window.as_weak());
+        linkers::window_events(&mut self.start_window.as_weak());
 
         let result = self.start_window.run();
         // in case if render goes wrong
@@ -37,87 +40,8 @@ impl UIManager {
         }
     }
 
-    fn window_events(&mut self){
-        let weak_ui = self.start_window.as_weak();
-        self.start_window.window().set_rendering_notifier(move |state, _graphics_api| {
-            // creating variable to get current state of window
-            let strong_ui = match weak_ui.upgrade() {
-                Some(ui) => ui,
-                None => return, // no processing if window is not available
-            };
-            let first_start = strong_ui.get_first_start();
+    /// Mode buttons stands for Server and Client choice. Page index 2.
+    pub fn switch_state_mode_buttons(&mut self, state: bool) { self.start_window.set_mode_button_is_active(state); }
 
-            // better to keep it "match" for the future use
-            match state {
-                RenderingState::BeforeRendering => {
-                    if !first_start { return; };  // it might be called multiple times
-                    strong_ui.set_first_start(false);  // starts animation
-                }
-                _ => {}
-            }
-        }).expect("Couldn't create notifier.");
-    }
-
-    fn link_validators(&mut self){
-        // Username
-        let weak_ui_origin = self.start_window.as_weak();
-
-        let weak_ui = weak_ui_origin.clone();
-        self.start_window.on_validate_username(move |text| {
-            let Some(strong_ui) = weak_ui.upgrade() else { return; };
-            let is_valid = validators::validate_username(&text);
-            strong_ui.set_username_error(!is_valid);
-        });
-
-        // IP
-        let weak_ui = weak_ui_origin.clone();
-        self.start_window.on_validate_ip(move |text| {
-            let Some(strong_ui) = weak_ui.upgrade() else { return; };
-            let is_valid = validators::validate_ip(&text);
-            strong_ui.set_ip_error(!is_valid);
-        });
-
-        // Port
-        let weak_ui = weak_ui_origin.clone();
-        self.start_window.on_validate_port(move |text| {
-            let Some(strong_ui) = weak_ui.upgrade() else { return; };
-            let is_valid = validators::validate_port(&text);
-            strong_ui.set_port_error(!is_valid);
-        });
-
-        // connection page
-        let weak_ui = weak_ui_origin.clone();
-        self.start_window.on_validate_connection_page(move || { pages::connection_page_validation(weak_ui.clone()); });
-
-        let weak_ui = weak_ui_origin.clone();
-        self.start_window.on_validate_username_page(move || { pages::username_page_validation(weak_ui.clone()); });
-
-        let weak_ui = weak_ui_origin.clone();
-        self.start_window.on_client_mode(move || {
-            let ui = weak_ui.upgrade().unwrap();
-            let ip = ui.get_ip().to_string();
-            let port = ui.get_port().parse::<u16>().unwrap_or(0);
-
-
-        });
-
-        let weak_ui = weak_ui_origin.clone();
-        self.start_window.on_server_mode(move || {
-            let ui = weak_ui.upgrade().unwrap();
-            let ip = ui.get_ip().to_string();
-            let port = ui.get_port().parse::<u16>().unwrap_or(0);
-
-            std::thread::spawn(move || {
-                // 3. Внутри этого потока запускаем Tokio Runtime
-                let rt = tokio::runtime::Builder::new_multi_thread()
-                    .enable_all()
-                    .build()
-                    .unwrap();
-
-                rt.block_on(async {
-                    log::info!("Starting server from a new thread...");
-                });
-            });
-        });
-    }
+    pub(super) fn core_link_commands(&mut self, tx: UnboundedSender<CoreCommand>) {linkers::core_link_commands(&mut self.start_window.as_weak(), tx);}
 }
