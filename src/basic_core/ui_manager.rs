@@ -1,12 +1,11 @@
-mod start_animation;
-mod center_main_window;
 mod validators;
 mod pages;
+mod center_new;
 
 use slint::{ComponentHandle, RenderingState};
 use crate::AppWindow;
 
-pub(super) struct UIManager {
+pub struct UIManager {
     start_window: AppWindow,
 }
 
@@ -14,14 +13,19 @@ impl UIManager {
     pub fn new() -> UIManager {
         let ui_manager = AppWindow::new().unwrap();
 
+        // centering is a bit of complicated
+        match center_new::center(ui_manager.as_weak()) {
+            Ok(()) => {},
+            Err(e) => { log::info!("Couldn't center window: {}", e);} }
+
         UIManager{
             start_window: ui_manager,
         }
     }
 
     pub fn setup(&mut self) {
-        self.window_events();
         self.link_validators();
+        self.window_events();
 
         let result = self.start_window.run();
         // in case if render goes wrong
@@ -41,16 +45,14 @@ impl UIManager {
                 Some(ui) => ui,
                 None => return, // no processing if window is not available
             };
+            let first_start = strong_ui.get_first_start();
 
-            // better to keep it "match" for the future improvements
+            // better to keep it "match" for the future use
             match state {
-
-                RenderingState::AfterRendering => {
-                    if !strong_ui.get_first_start() { return; };  // it might be called multiple times
-                    center_main_window::center_main_window(&strong_ui);
-                    start_animation::start_animation(&strong_ui);  // start animation changes first_start to false
+                RenderingState::BeforeRendering => {
+                    if !first_start { return; };  // it might be called multiple times
+                    strong_ui.set_first_start(false);  // starts animation
                 }
-
                 _ => {}
             }
         }).expect("Couldn't create notifier.");
@@ -89,5 +91,33 @@ impl UIManager {
 
         let weak_ui = weak_ui_origin.clone();
         self.start_window.on_validate_username_page(move || { pages::username_page_validation(weak_ui.clone()); });
+
+        let weak_ui = weak_ui_origin.clone();
+        self.start_window.on_client_mode(move || {
+            let ui = weak_ui.upgrade().unwrap();
+            let ip = ui.get_ip().to_string();
+            let port = ui.get_port().parse::<u16>().unwrap_or(0);
+
+
+        });
+
+        let weak_ui = weak_ui_origin.clone();
+        self.start_window.on_server_mode(move || {
+            let ui = weak_ui.upgrade().unwrap();
+            let ip = ui.get_ip().to_string();
+            let port = ui.get_port().parse::<u16>().unwrap_or(0);
+
+            std::thread::spawn(move || {
+                // 3. Внутри этого потока запускаем Tokio Runtime
+                let rt = tokio::runtime::Builder::new_multi_thread()
+                    .enable_all()
+                    .build()
+                    .unwrap();
+
+                rt.block_on(async {
+                    log::info!("Starting server from a new thread...");
+                });
+            });
+        });
     }
 }

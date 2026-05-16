@@ -3,10 +3,11 @@ import { ValidatedInput } from "./widgets/validated_input.slint";
 
 export component AppWindow inherits Window {
 
-    property <length> height_: 195pt;
-    property <length> width_: 210pt;
-
     in-out property <bool> first-start: true;
+
+    out property <length> height_: 195pt;
+    out property <length> width_: 210pt;
+
     in-out property <int> active-page: 0;
 
     // data
@@ -25,6 +26,9 @@ export component AppWindow inherits Window {
     callback validate_connection_page;
     callback validate_username_page;
 
+    callback client_mode();
+    callback server_mode();
+
     title: "SimpleChat";
 
     // making it appear in the same way as linux (debian), since width and height seems to be not enough.
@@ -34,13 +38,6 @@ export component AppWindow inherits Window {
     max-height: height_;
     min-width: width_;
     min-height: height_;
-
-    // making it appear at the center of the screen, so the first frame is not being rendered somewhere else.
-    no-frame: root.first-start;
-    //
-
-    x: (root.width - self.width) / 2;
-            y: (root.height - self.height) / 2;
 
     changed active-page  => {
         if (active-page == 0) {ip_w.focus-text()}
@@ -88,7 +85,7 @@ export component AppWindow inherits Window {
                 spacing: 8pt;
                 width: 140pt;
 
-                ip_w := ValidatedInput {
+                ip_w := ValidatedInput {  // w = widget
                     text-text <=> ip;
                     has-error: ip_error;
                     placeholder-text: "IP Address";
@@ -209,16 +206,15 @@ export component AppWindow inherits Window {
                     text: "Client";
                     height: 24pt;
                     primary: true;
-                    clicked => { }
+                    clicked => { client_mode()}
                 }
                 Button {
                     text: "Server";
                     height: 24pt;
                     primary: true;
-                    clicked => {}
+                    clicked => {server_mode()}
                 }
             }
         }
     }
-
 }

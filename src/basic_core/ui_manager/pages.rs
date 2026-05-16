@@ -32,7 +32,7 @@ pub fn username_page_validation(ui: Weak<AppWindow>) {
 
     let username_raw = strong_ui.get_username();
 
-    if (validate_username(&*username_raw)){
+    if validate_username(&*username_raw){
         log::info!("Successfully validated username ({username_raw})");
         change_page(strong_ui, 2);
     }

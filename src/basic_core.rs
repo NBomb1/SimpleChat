@@ -2,8 +2,11 @@ mod configuration_manager;
 mod ui_manager;
 mod network;
 mod logger;
+mod core_executor;
 
 use crate::basic_core::configuration_manager::ConfigurationManager;
+use crate::basic_core::core_executor::CoreCommand;
+// use crate::basic_core::network::NetworkManager;
 use crate::basic_core::ui_manager::UIManager;
 
 pub struct Core {
@@ -33,5 +36,16 @@ impl Core {
 
     fn close(&mut self) {
         log::info!("Closing core");
+    }
+
+    fn compact_bridge(&mut self) {
+        // creating roles
+        let (sender, receiver) = tokio::sync::mpsc::unbounded_channel::<CoreCommand>();
+
+
+        std::thread::spawn(async move || {
+            let rt = tokio::runtime::Runtime::new().unwrap();
+            rt.block_on(async { core_executor::execute(receiver) }).await;
+        });
     }
 }
