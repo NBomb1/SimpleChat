@@ -6,7 +6,7 @@ use crate::basic_core::core_executor::CoreCommand;
 
 pub(crate) fn window_events(weak_ui: &mut Weak<AppWindow>){
     let strong_ui = weak_ui.upgrade().unwrap();
-    
+
     let weak_ui = strong_ui.as_weak();
     strong_ui.window().set_rendering_notifier(move |state, _graphics_api| {
         // creating variable to get current state of window
@@ -18,7 +18,7 @@ pub(crate) fn window_events(weak_ui: &mut Weak<AppWindow>){
 
         // better to keep it "match" for the future use
         match state {
-            RenderingState::BeforeRendering => {
+            RenderingState::AfterRendering => {
                 if !first_start { return; };  // it might be called multiple times
                 strong_ui.set_first_start(false);  // starts animation
             }
