@@ -32,19 +32,19 @@
 > I've decided to build this app in more appropriate architectural way. I've taken my time figure out how should it work, if I want make it in my way:
 > Why chat? Well, it's because I thought it would be pretty simple.
 >
-> **Core** → Personally, this is what I want to do in my pet project, so I decided to build some sort of simple core.
-> **Bridge** → Well, I can understand how it works, but yet that was an AI idea, so I had lots of conversation regarding it and trying to make it work. Next time it might be easier, but I still haven't acknowledged all the steps.
-> **Configurator** → Basically, I think this is what every application should have, if not a script or any specific program.
-> **Network** → I'd worked on pet project UniCon, I have some experience in this field, so I decided just to use them again.
-> **Logger** → Making debugging experience better.
-> **GUI** → I got basic experience dealing with UI, so I thought there is no problem with that.
+- **Core** → Personally, this is what I want to do in my pet project, so I decided to build some sort of simple core.
+- **Bridge** → Well, I can understand how it works, but yet that was an AI idea, so I had lots of conversation regarding it and trying to make it work. Next time it might be easier, but I still haven't acknowledged all the steps.
+- **Configurator** → Basically, I think this is what every application should have, if not a script or any specific program.
+- **Network** → I'd worked on pet project UniCon, I have some experience in this field, so I decided just to use them again.
+- **Logger** → Making debugging experience better.
+- **GUI** → I got basic experience dealing with UI, so I thought there is no problem with that.
 
 ##### **Why you chose certain tools, frameworks, or libraries:**
-> **Rust** → Memory safety, C++ like performance, compiling language, trend.
-> **Slint** → CSS-like syntax, Native performance (compiles with code), cross-platform.
-> **Logger** → Structured logging, Colored output (readability), easy to setup.
-> **display-info** → That's the only easy way I found how to center window before it shows on the user's screen. Works great, but not on linux (WSL Debian). Simple to use & solves DPI ratio.
-> **Tokio** → The only asynchronous library I heard of. Got recommended by AI.
+- **Rust** → Memory safety, C++ like performance, compiling language, trend.
+- **Slint** → CSS-like syntax, Native performance (compiles with code), cross-platform.
+- **Logger** → Structured logging, Colored output (readability), easy to setup.
+- **display-info** → That's the only easy way I found how to center window before it shows on the user's screen. Works great, but not on linux (WSL Debian). Simple to use & solves DPI ratio.
+- **Tokio** → The only asynchronous library I heard of. Got recommended by AI.
 
 
 ##### **Flowcharts for key feature flows:**
