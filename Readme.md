@@ -25,7 +25,7 @@
 ---
 ## **Q/A**:
 ###### (It's just easier to write answers directly)
-##### **How you planned and approached the app:**
+#### **How you planned and approached the app:**
 > **Backstory:**
 > 	Personally, since I've met lots of architectural problems & Python limits, I lost my interest making heavy applications on a interpreter language. So I've decided start learning Rust. I learned some basic syntax, wanting to recreate UniCon on Rust using different ways to build it. When I only had project structure plan, when I've seen career affairs, I sent my CV to make an attempt to be hired. Then I've got an email from your company, and decided to get practice on selected project (SimpleChat), since I've already got some skills from UniCon.
 >
@@ -39,7 +39,7 @@
 - **Logger** → Making debugging experience better.
 - **GUI** → I got basic experience dealing with UI, so I thought there is no problem with that.
 
-##### **Why you chose certain tools, frameworks, or libraries:**
+#### **Why you chose certain tools, frameworks, or libraries:**
 - **Rust** → Memory safety, C++ like performance, compiling language, trend.
 - **Slint** → CSS-like syntax, Native performance (compiles with code), cross-platform.
 - **Logger** → Structured logging, Colored output (readability), easy to setup.
@@ -47,7 +47,7 @@
 - **Tokio** → The only asynchronous library I heard of. Got recommended by AI.
 
 
-##### **Flowcharts for key feature flows:**
+#### **Flowcharts for key feature flows:**
 1. Starting animation:
 ```
 Start program -> Slint renders first frame -> Triggers event -> Changes bool value -> Slint triggers bool change -> Changes opacity to 1 -> keyword animate entercepts and inperpolates opacity from start value(0) to end value(1) within set amount of time(1500ms).
