@@ -20,6 +20,7 @@
 
 ### Tested on:
 - Windows 11
+- Windows 11 (WSL)
 
 ---
 ## **Q/A**:
@@ -61,6 +62,8 @@ UI button triggers -> Button triggers Rust function -> UI_Manager sends command 
 
 ---
 ## Personal Thoughts:
-> This project was made within 7 days of marathon. It does not satisfy all of my goals, including that I planned for MVP. I had to use AI to at least make it work. And I have not yet acknowledged all used libraries since It's my first experience making MVP project on Rust & Slint. I underestimated my ambitious features, which led me into this result.
->
-> Nevertheless, this project represents fully working project, which satisfies all its MVP goals. Thus, I can say it is completed and will not be developed in the future, since it has completed its purpose.
+> This project was made within 7 days of marathon. It does not satisfy all of my goals, including that I planned for MVP. I had to use AI to at least make it work as I intended to make it on time. And I have not yet acknowledged all used libraries since It's my first experience making MVP project on Rust & Slint. I underestimated my ambitious features, which led me into this result.
+> 
+> (To be precise, the AI assistance ratio across the modules looks like this: UI 5%, Bridge 50%, Network 60%, Configurator 30%. Since this was my first time working with these specific libraries, I relied on AI to guide me through their implementation, even though I hate making unknown code).
+> 
+> Nevertheless, that represents a fully working project, which satisfies all its MVP goals. Thus, I can say it is completed and will not be developed in the future, since it has completed its purpose.
