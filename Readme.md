@@ -20,7 +20,6 @@
 
 ### Tested on:
 - Windows 11
-- Windows 11 (WSL Debian)
 
 ---
 ## **Q/A**:
