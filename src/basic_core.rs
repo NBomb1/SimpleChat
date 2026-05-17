@@ -2,45 +2,56 @@ mod configuration_manager;
 mod ui_manager;
 mod network;
 mod logger;
-mod core_executor;
+pub(crate) mod core_executor;
 
-use tokio::sync::mpsc::UnboundedSender;
+use std::sync::mpsc;
 use crate::basic_core::configuration_manager::ConfigurationManager;
-use crate::basic_core::core_executor::CoreCommand;
-use crate::basic_core::network::NetworkManager;
-use crate::basic_core::ui_manager::UIManager;
+use crate::basic_core::ui_manager::{UIEvent, UIManager};
 
 pub struct Core {
-    configurator_manager: ConfigurationManager,
     ui_manager: UIManager,
-    network_manager: network::NetworkManager,
-    command_tx: UnboundedSender<CoreCommand>
+    command_tx: tokio::sync::mpsc::UnboundedSender<core_executor::CoreCommand>,
+    event_rx: Option<mpsc::Receiver<UIEvent>>,
 }
 
 impl Core {
     pub fn new() -> Core {
-        logger::init(); // setting up logger
+        logger::init();
 
-        let ui = UIManager::new();  // ui
-        let configuration_manager = ConfigurationManager::new();  // configs
-        let network = NetworkManager::new();
+        let config = ConfigurationManager::new();
+        let (ip, port, username) = (  // cache values before config is moved into the executor
+            config.config.ip.clone(),
+            config.config.port.clone(),
+            config.config.username.clone(),);
 
-        Core{
-            configurator_manager: configuration_manager,
+        let (event_tx, event_rx) = mpsc::channel::<UIEvent>();
+        
+        // executes commands
+        let command_tx = core_executor::spawn_executor(config, event_tx);
+
+        let ui = UIManager::new(ip, port, username); // giving saving values
+
+        Core {
             ui_manager: ui,
-            network_manager: network,
-            command_tx: core_executor::create_compact_bridge(),
+            command_tx,
+            event_rx: Some(event_rx)
         }
     }
 
-    pub fn setup(&mut self) -> () {
+    pub fn setup(&mut self) {
         log::info!("Setting up core; Initializing UI.");
         self.ui_manager.core_link_commands(self.command_tx.clone());
-        self.ui_manager.setup();
+
+        // Start listening for events from the executor → UI
+        if let Some(event_rx) = self.event_rx.take() {
+            self.ui_manager.start_event_listener(event_rx);
+        }
+
+        self.ui_manager.setup();  // creates loop
+        self.close()  // After loop is gone
     }
 
-    fn close(&mut self) {
+    pub fn close(&mut self) {
         log::info!("Closing core");
     }
-
 }
